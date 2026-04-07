@@ -1,0 +1,598 @@
+===============================================================================
+CONVERSATION-ERA ENFORCEMENT NOTICE
+===============================================================================
+
+Before generating any update, classify it first:
+1. Subpack update
+2. Pack update
+3. Full build
+
+Do not classify by file count.
+Classify by contract impact.
+
+If shared runtime, shared logging, shared debug policy, env contract,
+cross-pack dependency, renderer ownership, or discovery behavior is touched,
+it requires a true full bot build.
+
+===============================================================================
+MASTER BOT RECIPE — CONVERSATION-ERA BUILD POLICY
+===============================================================================
+
+VERSION LINE
+- This recipe uses conversation-era versioning.
+- Each new conversation advances to a new letter series.
+- Previous conversation letter series are closed once a new conversation begins.
+- The active build line for this conversation is K.
+- K.1.0.0 is the baseline full-build reset for the K line.
+- K.x builds must follow the rules below.
+
+CORE BUILD PRINCIPLE
+- The bot must be updated by CONTRACT SCOPE, not by FILE SCOPE.
+- Do not judge update size by number of files changed.
+- Do not judge update size by whether the change "looks small".
+- Always judge update size by:
+  - which system contracts are affected
+  - whether ownership boundaries are crossed
+  - whether cross-pack compatibility is impacted
+
+UPDATE CLASSIFICATION RULE
+- Every requested change must be classified as exactly one of:
+  1. SUBPACK UPDATE
+  2. PACK UPDATE
+  3. FULL BUILD
+- This classification must be determined BEFORE generating code.
+
+Required wording when not full build:
+- "This does not require a full bot build."
+- "This is a subpack update only."
+or
+- "This is a pack update, not a full bot build."
+
+Required wording when full build is required:
+- "This requires a true full bot build."
+
+===============================================================================
+1. SUBPACK UPDATE RULE
+===============================================================================
+
+A SUBPACK UPDATE is allowed only when the change remains inside a single
+settings feature and does not alter any shared contract.
+
+Typical scope:
+- plugins/settings/features/<feature_name>/
+
+Examples:
+- feature wording change
+- toggle label change
+- one feature button fix
+- local feature embed/content changes
+- feature-local logic fix that does not require shared runtime changes
+
+A SUBPACK UPDATE MUST NOT change:
+- bot.py
+- pack loader behavior
+- feature discovery rules
+- registry contract
+- shared ops forum interfaces
+- public API of another pack
+- global debug behavior
+- hub menu ownership
+- command lifecycle policy used elsewhere
+
+If any of the above are touched, it is NOT a subpack update.
+
+===============================================================================
+2. PACK UPDATE RULE
+===============================================================================
+
+A PACK UPDATE is allowed when the change affects one top-level pack and its
+internal implementation, while preserving all public contracts used elsewhere.
+
+Typical scope:
+- plugins/exp/
+- plugins/settings/
+
+Examples:
+- fixing /exp defer timing inside EXP pack
+- improving EXP service internals
+- reorganizing pack internals while preserving imports and behavior
+- updating settings pack internals while preserving registry/discovery behavior
+
+A PACK UPDATE MUST preserve:
+- public imports relied on elsewhere
+- pack entry behavior
+- exposed helper/API files
+- existing settings integration points
+- existing cross-pack dependencies
+
+If shared runtime policy, debug policy, logging transport, env requirements,
+or renderer ownership changes, it is NOT a pack update.
+
+===============================================================================
+3. FULL BUILD RULE
+===============================================================================
+
+A FULL BUILD is required whenever a change crosses contracts or shared runtime
+ownership boundaries.
+
+A FULL BUILD is automatically required if any of these are touched:
+- bot.py
+- pack loading behavior
+- registry/discovery behavior
+- settings hub rendering ownership
+- shared logging architecture
+- ops forum system contracts
+- env requirements
+- cross-pack dependencies
+- command lifecycle policy shared across multiple packs
+- global debug policy
+- shared utilities used by multiple packs
+
+Examples:
+- applying DEBUG_MODE across the bot
+- changing command tracing policy
+- changing how ops forum threads are resolved or posted to
+- changing root settings rendering flow
+- changing shared interaction response behavior
+- changing imports/interfaces used by more than one pack
+
+===============================================================================
+BOT CORE CONTRACT
+===============================================================================
+
+Owner:
+- bot.py
+
+Responsibilities:
+- boot runtime
+- load environment variables
+- initialize logging
+- load packs
+- sync slash commands
+
+Hard rules:
+- bot.py must remain thin
+- bot.py must not contain feature-specific business logic
+- bot.py must not absorb logic that belongs inside packs/features
+- feature requests must not be solved by stuffing logic into bot.py
+
+If a fix pushes feature behavior into bot.py, it is a design violation.
+
+===============================================================================
+PACK CONTRACT
+===============================================================================
+
+Top-level packs currently include:
+- plugins/exp/
+- plugins/settings/
+
+Each pack must preserve its public shape and compatibility expectations.
+
+------------------------------------------------------------------------------
+EXP PACK CONTRACT
+------------------------------------------------------------------------------
+
+Required public shape:
+- plugins/exp/__init__.py
+- plugins/exp/api.py
+- plugins/exp/exp.py
+- plugins/exp/service.py
+
+Reason:
+- settings/features/exp depends on plugins.exp.api
+
+Therefore:
+- api.py is part of the EXP public contract
+- api.py must not be removed
+- EXP must not be reduced to a command-only replacement
+- internal refactors must preserve compatibility with settings EXP integration
+
+------------------------------------------------------------------------------
+SETTINGS PACK CONTRACT
+------------------------------------------------------------------------------
+
+Settings pack must preserve:
+- feature discovery
+- feature registry
+- settings slash command entry behavior
+- hub ownership of main settings rendering
+- compatibility with installed features
+
+===============================================================================
+DISCOVERY CONTRACT
+===============================================================================
+
+Settings features must preserve this exact structure:
+
+plugins/settings/features/<feature_name>/
+    __init__.py
+    pack.py
+
+Hard rules:
+- do not flatten feature folders
+- do not rename pack.py
+- do not bypass discovery by hardcoding features into unrelated files
+- do not merge feature logic in ways that break autodiscovery
+
+A feature is not just code.
+It is a discoverable runtime unit.
+
+If discovery breaks, the feature is considered broken even if the code compiles.
+
+===============================================================================
+RENDERER OWNERSHIP CONTRACT
+===============================================================================
+
+Owner:
+- plugins/settings/
+
+Hard rule:
+- the settings hub owns the main settings menu rendering
+
+Feature modules may:
+- define metadata
+- define toggles
+- define local actions
+- return state changes
+- return data to the hub
+
+Feature modules must NOT:
+- own the root menu lifecycle
+- directly take over main settings page rendering
+- independently control root navigation state
+- compete with hub-owned rendering flow
+
+Reason:
+Violating this causes:
+- stale views
+- conflicting interactions
+- duplicate responses
+- navigation inconsistency
+- broken ownership boundaries
+
+This rule is mandatory.
+
+===============================================================================
+CROSS-PACK DEPENDENCY CONTRACT
+===============================================================================
+
+If one pack imports from another pack, that import path is part of the system contract.
+
+Known confirmed dependency:
+- settings/features/exp uses: from plugins.exp import api
+
+Hard rules:
+- do not remove or rename imported interfaces without intentional versioned migration
+- do not treat a cross-pack dependency as "local"
+- do not replace one pack with a smaller version if another pack depends on its API
+- any change that risks another pack's imports/escalates expectations is not isolated
+
+If a request breaks another pack's expectations, the scope must be escalated.
+
+===============================================================================
+OPS FORUM CONTRACT
+===============================================================================
+
+Owner:
+- plugins/settings/ops_forum.py
+
+Purpose:
+- forum-based internal logging transport
+
+Expected environment variables:
+- OPS_GUILD_ID
+- OPS_FORUM_NAME
+- OPS_THREAD_STARTUP
+- OPS_THREAD_STATUS
+- OPS_THREAD_DEBUG
+
+Thread purposes:
+- Startup = boot / restart / build version notices
+- Status  = feature loaded / runtime notices / failures
+- Debug   = debug logs only when DEBUG_MODE=true
+
+Hard rules:
+- shared ops forum helpers must have one stable interface
+- do not duplicate helper definitions with conflicting signatures
+- do not overwrite shared helper functions accidentally
+- do not split behavior across incompatible versions of the same function name
+
+Known issue to prevent:
+- duplicate/conflicting post_status definitions
+
+Any shared logging cleanup here must preserve one consistent contract.
+
+===============================================================================
+DEBUG POLICY CONTRACT
+===============================================================================
+
+Global environment variable:
+- DEBUG_MODE
+
+Hard policy:
+- DEBUG_MODE=true must enable:
+  - console debug output
+  - debug thread posting
+  - event/action tracing
+
+- DEBUG_MODE=false must suppress noisy debug output
+
+Debug support must be policy-driven, not improvised feature-by-feature.
+
+Required debug payload should include when useful:
+- feature name
+- event/action
+- guild
+- channel
+- user
+- IDs
+- result (executed / suppressed / failed)
+
+Debug output should be consistent between:
+- console
+- debug forum thread
+
+No feature may invent a separate incompatible debug system.
+
+===============================================================================
+COMMAND LIFECYCLE RULE
+===============================================================================
+
+Any slash command that may perform logging, resolution, database work, network
+calls, view building, or other slow work must acknowledge the interaction
+before that work risks exceeding Discord timing limits.
+
+Hard rule:
+- defer first when needed
+- do not log first if logging can delay interaction acknowledgment
+- do not perform slow work before interaction response safety is handled
+
+This rule especially applies to:
+- /exp
+- /leaderboard
+- /settings
+
+If interaction safety is being normalized across multiple commands or packs,
+that is a FULL BUILD concern.
+
+===============================================================================
+VOICE ANNOUNCEMENT RULE
+===============================================================================
+
+Voice announcement behavior must guard against duplicate posts caused by
+multiple voice state transitions for the same real user action.
+
+Expected protection:
+- short-window dedupe guard
+
+Typical dedupe key:
+- guild_id
+- user_id
+- event_type
+- channel_id
+- timestamp window
+
+Debug logging for voice announcements, when DEBUG_MODE=true, should include:
+- event detected
+- before channel
+- after channel
+- announcement sent
+- announcement suppressed
+- suppression reason
+
+If dedupe is implemented locally without touching shared runtime policy, it may
+remain a subpack update.
+If it changes shared logging/debug/runtime flow, it becomes a full build issue.
+
+===============================================================================
+PENDING BUILD FLOW RULE
+===============================================================================
+
+If a true full bot build has already been requested, then all approved required
+shared-runtime changes for that build must be included in that same build.
+
+Do not interrupt a full build with:
+- partial artifacts
+- isolated replacements
+- downgraded pack-only responses
+
+unless explicitly requested by the user.
+
+Do not label a pack patch as a full build.
+Do not label a subpack patch as a full build.
+
+Build labeling must remain honest.
+
+===============================================================================
+VERSIONING SYSTEM — MULTI-CONVERSATION FLOW
+===============================================================================
+
+This project uses a structured versioning system tied to conversation cycles.
+
+----------------------------------------
+CORE RULE
+----------------------------------------
+
+Each NEW conversation = NEW LETTER SERIES
+
+Example progression:
+- H.x = previous conversation line
+- J.x = prior conversation line
+- K.x = current conversation line
+- L.x = next conversation line
+
+The letter represents the active development era.
+A new conversation must not continue the old letter series.
+
+----------------------------------------
+VERSION FORMAT
+----------------------------------------
+
+<LETTER>.<MAJOR>.<MINOR>.<PATCH>
+
+Examples:
+- K.1.0.0
+- K.1.1.0
+- K.2.3.4
+
+----------------------------------------
+VERSION COMPONENTS
+----------------------------------------
+
+LETTER:
+- changes only when a new conversation begins
+- represents a clean working cycle
+- must never go backwards
+
+MAJOR:
+- increment when new systems are introduced
+- increment when architecture changes
+- increment when core behavior shifts
+
+MINOR:
+- increment when features are expanded
+- increment when behavior is enhanced without structural replacement
+
+PATCH:
+- increment when bugs are fixed
+- increment when small corrections are applied
+- increment when no behavioral expansion occurs
+
+----------------------------------------
+STARTUP VERSION DISPLAY CONTRACT
+----------------------------------------
+
+The startup output must clearly separate bot version from pack/subpack versions.
+
+Bot display format:
+- Bot Version: <bot_version>
+
+Example:
+- Bot Version: K.1.1.0
+
+Pack/Subpack display format:
+- <Display Name> - <Module Version>
+
+Examples:
+- Experience - A.37
+- voice_announcements - A.5
+
+Hard rules:
+- pack/subpack versions do not need to match bot version
+- pack/subpack versions are independent of bot version
+- display name comes first
+- version comes second
+- old display formats like "exp v0.5.0 — Experience" must not be used
+
+Module metadata should support startup display using fields such as:
+- DISPLAY_NAME or display_name
+- MODULE_VERSION or module_version
+
+----------------------------------------
+ZIP ARTIFACT RULE
+----------------------------------------
+
+The downloaded zip filename must match the code version exactly.
+
+Correct:
+- K.1.0.0.zip
+- K.1.1.0.zip
+
+Incorrect:
+- MasterBot_K.1.1.0.zip
+- K.1.1.0_FULL_BUILD.zip
+- K.1.1.0_runtime_hardening.zip
+
+Internal folders and module paths must remain unchanged.
+Do not add version suffixes to packs, subpacks, modules, or folders.
+
+===============================================================================
+BUILD GATE CHECKLIST
+===============================================================================
+
+Every future update must pass the appropriate gate.
+
+------------------------------------------------------------------------------
+SUBPACK UPDATE GATE
+------------------------------------------------------------------------------
+
+Must all be true:
+- feature folder shape preserved
+- __init__.py preserved
+- pack.py preserved
+- no changes to discovery rules
+- no changes to pack public APIs
+- no changes to hub ownership
+- no changes to shared ops/debug interfaces
+
+If any item fails, it is not truly subpack-only.
+
+------------------------------------------------------------------------------
+PACK UPDATE GATE
+------------------------------------------------------------------------------
+
+Must all be true:
+- pack entry preserved
+- public imports preserved
+- cross-pack compatibility preserved
+- settings integration preserved
+- no shared runtime policy changed
+- no global debug/logging/env contracts changed
+
+If any item fails, escalate scope.
+
+------------------------------------------------------------------------------
+FULL BUILD GATE
+------------------------------------------------------------------------------
+
+Must verify all:
+- bot.py remains thin
+- pack loading preserved
+- settings discovery preserved
+- feature folder contracts preserved
+- EXP public API preserved
+- settings hub retains renderer ownership
+- ops forum helper signatures are stable
+- duplicate shared helper definitions are removed
+- debug gating is consistent
+- commands defer before risky slow work/logging
+- no feature takes over hub rendering
+- cross-pack imports remain valid
+- env contract remains accurate
+
+===============================================================================
+CURRENT K-SERIES PROJECT STATE
+===============================================================================
+
+K.1.0.0 status:
+- K series is the active conversation-era line
+- versioning follows multi-conversation letter advancement
+- bot version resets structurally when the conversation letter advances
+- full builds must use exact four-part version numbers
+- pack/subpack versions remain independent from bot version
+- startup version display must keep bot version separate from pack/subpack versions
+
+Recommended next true full build after K.1.0.0:
+- K.1.1.0 = targeted system-fix build within the active K line
+
+K-series rule:
+- passdown preserves history between conversations
+- version inflation must not be used to simulate continuity across letters
+- the letter changes because the conversation changed, not because the architecture regressed
+
+===============================================================================
+FINAL OPERATING RULE
+===============================================================================
+
+Never update this bot as a loose collection of patched files.
+
+Always preserve:
+- interfaces
+- ownership boundaries
+- discovery rules
+- cross-pack compatibility
+- honest build classification
+
+This bot is a contract-driven modular system.
+Treat it that way in every future build.
+===============================================================================

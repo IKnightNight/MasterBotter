@@ -1,0 +1,53 @@
+{
+  "guilds": {
+    "1092163249912426698": {
+      "enabled": true,
+      "investigation_thread_id": 1485740059444510760,
+      "active_thread_id": 1485740060941877249,
+      "archive_thread_id": 1485740063080972378,
+      "investigation_cases": {},
+      "active_cases": {},
+      "archive_cases": {},
+      "archive_index_by_user": {},
+      "pending_ban_recoveries": {},
+      "settings": {
+        "auto_threshold_actions": true,
+        "threshold_1_action": "timeout",
+        "threshold_1_duration_minutes": 5,
+        "threshold_2_action": "timeout",
+        "threshold_2_duration_days": 7,
+        "threshold_3_action": "timeout",
+        "threshold_3_duration_days": 30,
+        "threshold_4_action": "ban"
+      }
+    },
+    "1470908112302112903": {
+      "enabled": true,
+      "investigation_thread_id": 1490895661330075659,
+      "active_thread_id": 1490895664459022476,
+      "archive_thread_id": 1490895666417762316,
+      "investigation_cases": {},
+      "active_cases": {},
+      "archive_cases": {},
+      "archive_index_by_user": {},
+      "pending_ban_recoveries": {},
+      "settings": {
+        "auto_threshold_actions": true,
+        "threshold_1_action": "timeout",
+        "threshold_1_duration_minutes": 5,
+        "threshold_2_action": "timeout",
+        "threshold_2_duration_days": 7,
+        "threshold_3_action": "timeout",
+        "threshold_3_duration_days": 30,
+        "threshold_4_action": "ban"
+      }
+    }
+  },
+  "next_ids": {
+    "investigation": 1,
+    "active": 1,
+    "archive": 1,
+    "alert": 1,
+    "recovery": 1
+  }
+}

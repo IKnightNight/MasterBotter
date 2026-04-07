@@ -1,0 +1,107 @@
+{
+  "guilds": {
+    "1470908112302112903": {
+      "enabled": true,
+      "thread_unverified_id": 1490951258251464744,
+      "thread_denied_id": 1490951258704711692,
+      "thread_completed_id": 1490951259677528194,
+      "unverified_role_id": 1473452050246406245,
+      "verified_role_id": 1473452133322850438,
+      "verifier_role_ids": [],
+      "verifier_role_id": null,
+      "warn_after_days": 3,
+      "kick_after_days": 7,
+      "dm_expiry_minutes": 2,
+      "manual_override_grace_seconds": 15,
+      "cleanup_invite_channel_id": null,
+      "cleanup_strike_limit": 3,
+      "verifier_dm_embed_enabled": true,
+      "verifier_dm_title": "Verification Request",
+      "verifier_dm_description": "An unverified member is in voice with you, a verifier."
+    }
+  },
+  "cases": {
+    "1470908112302112903:1239394600079196251": {
+      "case_id": "case-1",
+      "guild_id": 1470908112302112903,
+      "user_id": 1239394600079196251,
+      "user_name": "alexsecondaccount",
+      "status": "APPROVED",
+      "created_at": "2026-04-07T05:49:08.286455+00:00",
+      "entered_unverified_at": "2026-04-07T05:49:08.286455+00:00",
+      "server_join_time": "2026-04-07T00:46:57.196000+00:00",
+      "invite_creator": "Unknown",
+      "invite_creator_id": null,
+      "warned": false,
+      "cleanup_strikes": 0,
+      "pending_dms": [],
+      "dm_requests": {},
+      "voice_context": [],
+      "history": [],
+      "closed": true,
+      "snapshot_display_name": "Alex",
+      "snapshot_nick": "",
+      "snapshot_user_name": "alexsecondaccount",
+      "snapshot_avatar_url": "https://cdn.discordapp.com/avatars/1239394600079196251/c4a880b65b34c29de0f26ca91010ba6a.png?size=1024",
+      "snapshot_mention": "<@1239394600079196251>",
+      "handled_by": "knight.night",
+      "handled_by_id": 346585392637673475,
+      "handled_at": "2026-04-07T06:14:09.320168+00:00",
+      "archive_channel_id": 1490951259677528194,
+      "archive_message_id": 1490957843753603212
+    }
+  },
+  "invite_cache": {
+    "1092163249912426698": {
+      "DzY3jUHs": {
+        "uses": 0,
+        "inviter": "knight.night",
+        "inviter_id": 346585392637673475
+      },
+      "Rwf93k6MYB": {
+        "uses": 3,
+        "inviter": "knight.night",
+        "inviter_id": 346585392637673475
+      },
+      "g2tyr7u8YF": {
+        "uses": 0,
+        "inviter": "knight.night",
+        "inviter_id": 346585392637673475
+      }
+    },
+    "1470908112302112903": {
+      "8tXZENYr": {
+        "uses": 0,
+        "inviter": "Master Botter#4394",
+        "inviter_id": 1187066518526238800
+      },
+      "DqxMtwfq": {
+        "uses": 0,
+        "inviter": "Master Botter#4394",
+        "inviter_id": 1187066518526238800
+      },
+      "J26exdfw": {
+        "uses": 0,
+        "inviter": "Master Botter#4394",
+        "inviter_id": 1187066518526238800
+      },
+      "P2yQkwPb": {
+        "uses": 0,
+        "inviter": "Master Botter#4394",
+        "inviter_id": 1187066518526238800
+      },
+      "nrm6vyEM": {
+        "uses": 12,
+        "inviter": "knight.night",
+        "inviter_id": 346585392637673475
+      },
+      "qQGmZcBV": {
+        "uses": 0,
+        "inviter": "Master Botter#4394",
+        "inviter_id": 1187066518526238800
+      }
+    }
+  },
+  "invite_temp": {},
+  "case_seq": 1
+}

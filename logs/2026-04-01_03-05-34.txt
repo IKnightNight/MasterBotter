@@ -1,0 +1,131 @@
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: discord.py<3,>=2.6.0 in ./.local/lib/python3.11/site-packages (2.7.1)
+Requirement already satisfied: aiohttp<4,>=3.7.4 in ./.local/lib/python3.11/site-packages (from discord.py<3,>=2.6.0) (3.13.3)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in ./.local/lib/python3.11/site-packages (from aiohttp<4,>=3.7.4->discord.py<3,>=2.6.0) (2.6.1)
+Requirement already satisfied: aiosignal>=1.4.0 in ./.local/lib/python3.11/site-packages (from aiohttp<4,>=3.7.4->discord.py<3,>=2.6.0) (1.4.0)
+Requirement already satisfied: attrs>=17.3.0 in ./.local/lib/python3.11/site-packages (from aiohttp<4,>=3.7.4->discord.py<3,>=2.6.0) (25.4.0)
+Requirement already satisfied: frozenlist>=1.1.1 in ./.local/lib/python3.11/site-packages (from aiohttp<4,>=3.7.4->discord.py<3,>=2.6.0) (1.8.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in ./.local/lib/python3.11/site-packages (from aiohttp<4,>=3.7.4->discord.py<3,>=2.6.0) (6.7.1)
+Requirement already satisfied: propcache>=0.2.0 in ./.local/lib/python3.11/site-packages (from aiohttp<4,>=3.7.4->discord.py<3,>=2.6.0) (0.4.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in ./.local/lib/python3.11/site-packages (from aiohttp<4,>=3.7.4->discord.py<3,>=2.6.0) (1.23.0)
+Requirement already satisfied: typing-extensions>=4.2 in ./.local/lib/python3.11/site-packages (from aiosignal>=1.4.0->aiohttp<4,>=3.7.4->discord.py<3,>=2.6.0) (4.15.0)
+Requirement already satisfied: idna>=2.0 in ./.local/lib/python3.11/site-packages (from yarl<2.0,>=1.17.0->aiohttp<4,>=3.7.4->discord.py<3,>=2.6.0) (3.11)
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: python-dotenv<2,>=1.0.0 in ./.local/lib/python3.11/site-packages (1.2.2)
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: PyNaCl<2,>=1.5.0 in ./.local/lib/python3.11/site-packages (1.6.2)
+Requirement already satisfied: cffi>=2.0.0 in ./.local/lib/python3.11/site-packages (from PyNaCl<2,>=1.5.0) (2.0.0)
+Requirement already satisfied: pycparser in ./.local/lib/python3.11/site-packages (from cffi>=2.0.0->PyNaCl<2,>=1.5.0) (3.0)
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: suntime>=1.2.5 in ./.local/lib/python3.11/site-packages (1.3.2)
+Requirement already satisfied: python-dateutil in ./.local/lib/python3.11/site-packages (from suntime>=1.2.5) (2.9.0.post0)
+Requirement already satisfied: six>=1.5 in ./.local/lib/python3.11/site-packages (from python-dateutil->suntime>=1.2.5) (1.17.0)
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: geocoder>=1.38.1 in ./.local/lib/python3.11/site-packages (1.38.1)
+Requirement already satisfied: click in ./.local/lib/python3.11/site-packages (from geocoder>=1.38.1) (8.3.1)
+Requirement already satisfied: future in ./.local/lib/python3.11/site-packages (from geocoder>=1.38.1) (1.0.0)
+Requirement already satisfied: ratelim in ./.local/lib/python3.11/site-packages (from geocoder>=1.38.1) (0.1.6)
+Requirement already satisfied: requests in ./.local/lib/python3.11/site-packages (from geocoder>=1.38.1) (2.32.5)
+Requirement already satisfied: six in ./.local/lib/python3.11/site-packages (from geocoder>=1.38.1) (1.17.0)
+Requirement already satisfied: decorator in ./.local/lib/python3.11/site-packages (from ratelim->geocoder>=1.38.1) (5.2.1)
+Requirement already satisfied: charset_normalizer<4,>=2 in ./.local/lib/python3.11/site-packages (from requests->geocoder>=1.38.1) (3.4.6)
+Requirement already satisfied: idna<4,>=2.5 in ./.local/lib/python3.11/site-packages (from requests->geocoder>=1.38.1) (3.11)
+Requirement already satisfied: urllib3<3,>=1.21.1 in ./.local/lib/python3.11/site-packages (from requests->geocoder>=1.38.1) (2.6.3)
+Requirement already satisfied: certifi>=2017.4.17 in ./.local/lib/python3.11/site-packages (from requests->geocoder>=1.38.1) (2026.2.25)
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: humanfriendly>=8.2 in ./.local/lib/python3.11/site-packages (10.0)
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: durations_nlp>=1.0.1 in ./.local/lib/python3.11/site-packages (1.0.1)
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: expiringdict>=1.2.1 in ./.local/lib/python3.11/site-packages (1.2.2)
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: structlog>=22.3.0 in ./.local/lib/python3.11/site-packages (25.5.0)
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: python-json-logger>=2.0.4 in ./.local/lib/python3.11/site-packages (4.0.0)
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: fluent.runtime>=0.4.0 in ./.local/lib/python3.11/site-packages (0.4.0)
+Requirement already satisfied: fluent.syntax<0.20,>=0.17 in ./.local/lib/python3.11/site-packages (from fluent.runtime>=0.4.0) (0.19.0)
+Requirement already satisfied: attrs in ./.local/lib/python3.11/site-packages (from fluent.runtime>=0.4.0) (25.4.0)
+Requirement already satisfied: babel in ./.local/lib/python3.11/site-packages (from fluent.runtime>=0.4.0) (2.18.0)
+Requirement already satisfied: pytz in ./.local/lib/python3.11/site-packages (from fluent.runtime>=0.4.0) (2026.1.post1)
+Requirement already satisfied: typing-extensions<5,>=3.7 in ./.local/lib/python3.11/site-packages (from fluent.runtime>=0.4.0) (4.15.0)
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: uvloop>=0.17.0 in ./.local/lib/python3.11/site-packages (0.22.1)
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+[33m[BOT][0m davey is not installed, voice will NOT be supported
+[33m[BOT] boot: version=L.12 python=3.11.0 discord.py=2.7.1[0m
+[33m[BOT][0m boot: intents: members=True, presences=True, message_content=True, guilds=True, messages=True, reactions=True
+[33m[BOT][0m Using selector: EpollSelector
+[33m[BOT][0m boot: loading extension plugins.settings.setting
+[33m[BOT][0m context menu loaded: Report User
+[33m[BOT][0m context menu loaded: Strike User
+[33m[BOT][0m settings.[92mmoderation[0m: loaded
+[33m[BOT][0m settings.[92munverified[0m: loaded
+[33m[BOT][0m settings.[92mvoice_announcements[0m: loaded
+[33m[BOT][0m settings.[92mwelcome[0m: loaded
+[33m[BOT][0m settings: loaded features count=4
+[33m[BOT][0m context menu loaded: View EXP
+[33m[BOT][0m exp: loaded
+[33m[BOT][0m boot: extension loaded
+[33m[BOT][0m ready: logged in as Master Botter#4394 (1187066518526238800)
+[33m[BOT][0m ready: guilds=2 latency_ms=42
+[33m[BOT][0m ready: app_commands: synced (guild) guilds=Omami(1092163249912426698), ALEX BOT_BVNK3R(1470908112302112903)
+[95m[DEBUG][0m ops: [94mstartup repair using configured threads only guild=ALEX BOT_BVNK3R[0m
+[33m[BOT][0m grace threads ensured guild=Omami active=Grace - ACTIVE completed=Grace - COMPLETED state=ENABLED
+[33m[BOT][0m offender threads ensured guild=Omami investigation=Offenders - Investigation active=Offenders - Active archive=Offenders - Archive state=ENABLED
+[33m[BOT][0m grace threads ensured guild=ALEX BOT_BVNK3R active=Grace - ACTIVE completed=Grace - COMPLETED state=ENABLED
+[33m[BOT][0m offender threads ensured guild=ALEX BOT_BVNK3R investigation=Offenders - Investigation active=Offenders - Active archive=Offenders - Archive state=ENABLED
+[33m[BOT][0m threads reset guild=ALEX BOT_BVNK3R status=SYSTEM - STATUS debug=SYSTEM - DEBUG
+[33m[BOT][0m startup posted guild=ALEX BOT_BVNK3R thread=SYSTEM - STARTUP
+[95m[DEBUG][0m ops: [93mvalidation pass guild=ALEX BOT_BVNK3R source=startup validated=3 active=0 finalized=0 flagged=1[0m
+[33m[BOT][0m status guild=ALEX BOT_BVNK3R detail=startup repair started
+[95m[DEBUG][0m ops: rebound active views guild=ALEX BOT_BVNK3R refreshed=0 reposted=0 failed=0
+[33m[BOT][0m status guild=ALEX BOT_BVNK3R detail=startup repair complete
+[33m[BOT][0m offender threads ensured guild=ALEX BOT_BVNK3R investigation=Offenders - Investigation active=Offenders - Active archive=Offenders - Archive state=ENABLED
+[33m[BOT][0m offender threads ensured guild=ALEX BOT_BVNK3R investigation=Offenders - Investigation active=Offenders - Active archive=Offenders - Archive state=ENABLED
+[33m[BOT][0m moderation: forgive picker opened guild=ALEX BOT_BVNK3R user=1239394600079196251 moderator=346585392637673475 case=act-11 strikes=2
+[33m[BOT][0m moderation: forgive strike selected guild=ALEX BOT_BVNK3R user=1239394600079196251 moderator=346585392637673475 case=act-11 strike_id=stk-2 reason=123112
+[33m[BOT][0m offender threads ensured guild=ALEX BOT_BVNK3R investigation=Offenders - Investigation active=Offenders - Active archive=Offenders - Archive state=ENABLED
+[33m[BOT][0m moderation: forgive confirmed guild=ALEX BOT_BVNK3R user=1239394600079196251 moderator=346585392637673475 case=act-11 strike_id=stk-2 removed_reason=123112 before_count=2
+[33m[BOT][0m moderation: forgive applied guild=ALEX BOT_BVNK3R user=1239394600079196251 moderator=346585392637673475 case=act-11 remaining_strikes=1
+[33m[BOT][0m moderation: forgive picker opened guild=ALEX BOT_BVNK3R user=1239394600079196251 moderator=346585392637673475 case=act-11 strikes=1
+[33m[BOT][0m moderation: forgive picker opened guild=ALEX BOT_BVNK3R user=1239394600079196251 moderator=346585392637673475 case=act-11 strikes=1
+[33m[BOT][0m moderation: forgive strike selected guild=ALEX BOT_BVNK3R user=1239394600079196251 moderator=346585392637673475 case=act-11 strike_id=stk-1 reason=13144
+[33m[BOT][0m offender threads ensured guild=ALEX BOT_BVNK3R investigation=Offenders - Investigation active=Offenders - Active archive=Offenders - Archive state=ENABLED
+[33m[BOT][0m moderation: forgive confirmed guild=ALEX BOT_BVNK3R user=1239394600079196251 moderator=346585392637673475 case=act-11 strike_id=stk-1 removed_reason=13144 before_count=1
+[33m[BOT][0m moderation: forgive reduced to zero guild=ALEX BOT_BVNK3R user=1239394600079196251 moderator=346585392637673475 case=act-11 timeout_removed=Yes

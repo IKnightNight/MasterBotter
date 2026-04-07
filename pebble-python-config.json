@@ -1,0 +1,10 @@
+{
+  "main_file": "bot.py",
+  "python_version": "3.11",
+  "requirements_file": "requirements.txt",
+  "mainFile": "bot.py",
+  "pythonVersion": "3.11",
+  "requirementsFile": "requirements.txt",
+  "main": "bot.py",
+  "python": "3.11"
+}

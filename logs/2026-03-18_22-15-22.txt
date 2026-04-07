@@ -1,0 +1,211 @@
+Defaulting to user installation because normal site-packages is not writeable
+Collecting discord.py<3,>=2.6.0
+  Downloading discord_py-2.7.1-py3-none-any.whl (1.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 25.0 MB/s eta 0:00:00
+Collecting aiohttp<4,>=3.7.4
+  Downloading aiohttp-3.13.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 52.7 MB/s eta 0:00:00
+Collecting aiohappyeyeballs>=2.5.0
+  Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+Collecting aiosignal>=1.4.0
+  Downloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+Collecting attrs>=17.3.0
+  Downloading attrs-25.4.0-py3-none-any.whl (67 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 67.6/67.6 kB 39.0 MB/s eta 0:00:00
+Collecting frozenlist>=1.1.1
+  Downloading frozenlist-1.8.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (231 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 231.1/231.1 kB 95.3 MB/s eta 0:00:00
+Collecting multidict<7.0,>=4.5
+  Downloading multidict-6.7.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (246 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 246.3/246.3 kB 93.9 MB/s eta 0:00:00
+Collecting propcache>=0.2.0
+  Downloading propcache-0.4.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (210 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 210.0/210.0 kB 84.1 MB/s eta 0:00:00
+Collecting yarl<2.0,>=1.17.0
+  Downloading yarl-1.23.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (102 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 102.7/102.7 kB 55.8 MB/s eta 0:00:00
+Collecting typing-extensions>=4.2
+  Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.6/44.6 kB 30.2 MB/s eta 0:00:00
+Collecting idna>=2.0
+  Downloading idna-3.11-py3-none-any.whl (71 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 71.0/71.0 kB 45.1 MB/s eta 0:00:00
+Installing collected packages: typing-extensions, propcache, multidict, idna, frozenlist, attrs, aiohappyeyeballs, yarl, aiosignal, aiohttp, discord.py
+Successfully installed aiohappyeyeballs-2.6.1 aiohttp-3.13.3 aiosignal-1.4.0 attrs-25.4.0 discord.py-2.7.1 frozenlist-1.8.0 idna-3.11 multidict-6.7.1 propcache-0.4.1 typing-extensions-4.15.0 yarl-1.23.0
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Collecting python-dotenv<2,>=1.0.0
+  Downloading python_dotenv-1.2.2-py3-none-any.whl (22 kB)
+Installing collected packages: python-dotenv
+  WARNING: The script dotenv is installed in '/home/container/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+Successfully installed python-dotenv-1.2.2
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Collecting PyNaCl<2,>=1.5.0
+  Downloading pynacl-1.6.2-cp38-abi3-manylinux_2_34_x86_64.whl (1.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 30.0 MB/s eta 0:00:00
+Collecting cffi>=2.0.0
+  Downloading cffi-2.0.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (215 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 215.6/215.6 kB 52.0 MB/s eta 0:00:00
+Collecting pycparser
+  Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 48.2/48.2 kB 34.3 MB/s eta 0:00:00
+Installing collected packages: pycparser, cffi, PyNaCl
+Successfully installed PyNaCl-1.6.2 cffi-2.0.0 pycparser-3.0
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Collecting suntime>=1.2.5
+  Downloading suntime-1.3.2-py3-none-any.whl (7.2 kB)
+Collecting python-dateutil
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 229.9/229.9 kB 14.6 MB/s eta 0:00:00
+Collecting six>=1.5
+  Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Installing collected packages: six, python-dateutil, suntime
+Successfully installed python-dateutil-2.9.0.post0 six-1.17.0 suntime-1.3.2
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Collecting geocoder>=1.38.1
+  Downloading geocoder-1.38.1-py2.py3-none-any.whl (98 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 98.6/98.6 kB 3.9 MB/s eta 0:00:00
+Collecting click
+  Downloading click-8.3.1-py3-none-any.whl (108 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 108.3/108.3 kB 64.5 MB/s eta 0:00:00
+Collecting future
+  Downloading future-1.0.0-py3-none-any.whl (491 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 491.3/491.3 kB 40.5 MB/s eta 0:00:00
+Collecting ratelim
+  Downloading ratelim-0.1.6-py2.py3-none-any.whl (4.0 kB)
+Collecting requests
+  Downloading requests-2.32.5-py3-none-any.whl (64 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.7/64.7 kB 28.1 MB/s eta 0:00:00
+Requirement already satisfied: six in ./.local/lib/python3.11/site-packages (from geocoder>=1.38.1) (1.17.0)
+Collecting decorator
+  Downloading decorator-5.2.1-py3-none-any.whl (9.2 kB)
+Collecting charset_normalizer<4,>=2
+  Downloading charset_normalizer-3.4.6-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (204 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 204.7/204.7 kB 82.0 MB/s eta 0:00:00
+Requirement already satisfied: idna<4,>=2.5 in ./.local/lib/python3.11/site-packages (from requests->geocoder>=1.38.1) (3.11)
+Collecting urllib3<3,>=1.21.1
+  Downloading urllib3-2.6.3-py3-none-any.whl (131 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 131.6/131.6 kB 69.6 MB/s eta 0:00:00
+Collecting certifi>=2017.4.17
+  Downloading certifi-2026.2.25-py3-none-any.whl (153 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 153.7/153.7 kB 75.7 MB/s eta 0:00:00
+Installing collected packages: urllib3, future, decorator, click, charset_normalizer, certifi, requests, ratelim, geocoder
+  WARNING: The scripts futurize and pasteurize are installed in '/home/container/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The script normalizer is installed in '/home/container/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The script geocode is installed in '/home/container/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+Successfully installed certifi-2026.2.25 charset_normalizer-3.4.6 click-8.3.1 decorator-5.2.1 future-1.0.0 geocoder-1.38.1 ratelim-0.1.6 requests-2.32.5 urllib3-2.6.3
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Collecting humanfriendly>=8.2
+  Downloading humanfriendly-10.0-py2.py3-none-any.whl (86 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 86.8/86.8 kB 3.3 MB/s eta 0:00:00
+Installing collected packages: humanfriendly
+  WARNING: The script humanfriendly is installed in '/home/container/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+Successfully installed humanfriendly-10.0
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Collecting durations_nlp>=1.0.1
+  Downloading durations_nlp-1.0.1-py3-none-any.whl (7.4 kB)
+Installing collected packages: durations_nlp
+Successfully installed durations_nlp-1.0.1
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Collecting expiringdict>=1.2.1
+  Downloading expiringdict-1.2.2-py3-none-any.whl (8.5 kB)
+Installing collected packages: expiringdict
+Successfully installed expiringdict-1.2.2
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Collecting structlog>=22.3.0
+  Downloading structlog-25.5.0-py3-none-any.whl (72 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 72.5/72.5 kB 3.4 MB/s eta 0:00:00
+Installing collected packages: structlog
+Successfully installed structlog-25.5.0
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Collecting python-json-logger>=2.0.4
+  Downloading python_json_logger-4.0.0-py3-none-any.whl (15 kB)
+Installing collected packages: python-json-logger
+Successfully installed python-json-logger-4.0.0
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Collecting fluent.runtime>=0.4.0
+  Downloading fluent.runtime-0.4.0-py2.py3-none-any.whl (15 kB)
+Collecting fluent.syntax<0.20,>=0.17
+  Downloading fluent.syntax-0.19.0-py2.py3-none-any.whl (16 kB)
+Requirement already satisfied: attrs in ./.local/lib/python3.11/site-packages (from fluent.runtime>=0.4.0) (25.4.0)
+Collecting babel
+  Downloading babel-2.18.0-py3-none-any.whl (10.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 90.9 MB/s eta 0:00:00
+Collecting pytz
+  Downloading pytz-2026.1.post1-py2.py3-none-any.whl (510 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 510.5/510.5 kB 69.4 MB/s eta 0:00:00
+Requirement already satisfied: typing-extensions<5,>=3.7 in ./.local/lib/python3.11/site-packages (from fluent.runtime>=0.4.0) (4.15.0)
+Installing collected packages: pytz, fluent.syntax, babel, fluent.runtime
+  WARNING: The script pybabel is installed in '/home/container/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+Successfully installed babel-2.18.0 fluent.runtime-0.4.0 fluent.syntax-0.19.0 pytz-2026.1.post1
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+Defaulting to user installation because normal site-packages is not writeable
+Collecting uvloop>=0.17.0
+  Downloading uvloop-0.22.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.8/3.8 MB 42.5 MB/s eta 0:00:00
+Installing collected packages: uvloop
+Successfully installed uvloop-0.22.1
+
+[notice] A new release of pip is available: 23.0.1 -> 26.0.1
+[notice] To update, run: python3.11 -m pip install --upgrade pip
+[33m[BOT][0m davey is not installed, voice will NOT be supported
+[33m[BOT][0m boot: version=I.13 python=3.11.0 discord.py=2.7.1
+[33m[BOT][0m boot: intents: members=True, presences=True, message_content=True, guilds=True, messages=True, reactions=True
+[33m[BOT][0m Using selector: EpollSelector
+[33m[BOT][0m boot: loading extension plugins.settings.setting
+[33m[BOT][0m settings.[92mexp[0m: loaded
+[33m[BOT][0m settings.[92munverified[0m: loaded
+[33m[BOT][0m settings.[92mvoice_announcements[0m: loaded
+[33m[BOT][0m settings: loaded features count=3
+[33m[BOT][0m exp: loaded
+[33m[BOT][0m boot: extension loaded
+[33m[BOT][0m ready: logged in as Master Botter#4394 (1187066518526238800)
+[33m[BOT][0m ready: guilds=2 latency_ms=42
+[33m[BOT][0m ready: app_commands: synced (global)
+[95m[DEBUG][0m ops guild=1470908112302112903: startup repair using configured threads only guild=1470908112302112903
+[33m[BOT][0m ops: threads reset guild=1470908112302112903 startup=None status=1484027602485248061 debug=1484027605635301417
+[33m[BOT][0m ops status guild=1470908112302112903: startup repair started
+[33m[BOT][0m ops: startup posted guild=1470908112302112903 thread=1484027608269193236
+[95m[DEBUG][0m ops guild=1470908112302112903: rebound active views guild=1470908112302112903 refreshed=0 reposted=0 failed=0
+[33m[BOT][0m ops status guild=1470908112302112903: startup repair complete
+[95m[DEBUG][0m ops guild=1470908112302112903: case created guild=1470908112302112903 user=203999375347679232
+[95m[DEBUG][0m ops guild=1470908112302112903: case realigned guild=1470908112302112903 user=203999375347679232 status=UNVERIFIED old_channel=1484021373712990370 new_channel=1484021373712990370 old_message=1484027619589619892 new_message=1484027629739966675
+[95m[DEBUG][0m ops guild=1470908112302112903: case created guild=1470908112302112903 user=421081334547480577
+[95m[DEBUG][0m ops guild=1470908112302112903: validation pass guild=1470908112302112903 source=startup validated=2 active=2 finalized=0 flagged=0

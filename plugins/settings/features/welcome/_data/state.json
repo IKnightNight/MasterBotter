@@ -1,0 +1,106 @@
+{
+  "guilds": {
+    "1092163249912426698": {
+      "enabled": true,
+      "join_channel_id": null,
+      "leave_channel_id": null,
+      "autorole_id": null,
+      "grace_role_ids": [],
+      "grace_days": 14,
+      "templates": {
+        "join": "Welcome {user_mention} to **{guild_name}**.",
+        "leave": "{user_name} has left **{guild_name}**.",
+        "grace_dm": "Hey {user_name},\n\nYou left **{guild_name}**. Your roles are being held for {grace_days} day(s). If you want to come back during that time, use this one-use invite:\n{invite_link}\n\nThis invite expires at {expires_at}. If you return before then, your saved roles will be restored automatically."
+      },
+      "grace_active_thread_id": 1484428724999819325,
+      "grace_completed_thread_id": 1484428726140801075,
+      "grace_records": {},
+      "last_sweep_at": "2026-04-07T20:43:16Z",
+      "join_phrases": [
+        "joined us",
+        "arrived",
+        "made their entrance",
+        "dropped in",
+        "showed up",
+        "rolled in",
+        "stepped inside",
+        "wandered in",
+        "entered the scene",
+        "pulled up",
+        "clocked in",
+        "made it through the door",
+        "touched down",
+        "came by",
+        "popped in"
+      ],
+      "leave_phrases": [
+        "headed out",
+        "took their leave",
+        "slipped away",
+        "signed off",
+        "stepped away",
+        "made their exit",
+        "dipped out",
+        "moved on",
+        "checked out",
+        "disappeared into the void",
+        "called it a day",
+        "left the building",
+        "bounced",
+        "logged off",
+        "faded into the distance"
+      ]
+    },
+    "1470908112302112903": {
+      "enabled": true,
+      "join_channel_id": 1484393875044040714,
+      "leave_channel_id": 1484393895553929327,
+      "autorole_id": null,
+      "grace_role_ids": [],
+      "grace_days": 14,
+      "templates": {
+        "join": "Welcome {user_mention} to **{guild_name}**.",
+        "leave": "{user_name} has left **{guild_name}**.",
+        "grace_dm": "Hey {user_name},\n\nYou left **{guild_name}**. Your roles are being held for {grace_days} day(s). If you want to come back during that time, use this one-use invite:\n{invite_link}\n\nThis invite expires at {expires_at}. If you return before then, your saved roles will be restored automatically."
+      },
+      "grace_active_thread_id": 1490895661539921961,
+      "grace_completed_thread_id": 1490895663414775879,
+      "grace_records": {},
+      "last_sweep_at": "2026-04-07T20:43:17Z",
+      "join_phrases": [
+        "joined us",
+        "arrived",
+        "made their entrance",
+        "dropped in",
+        "showed up",
+        "rolled in",
+        "stepped inside",
+        "wandered in",
+        "entered the scene",
+        "pulled up",
+        "clocked in",
+        "made it through the door",
+        "touched down",
+        "came by",
+        "popped in"
+      ],
+      "leave_phrases": [
+        "headed out",
+        "took their leave",
+        "slipped away",
+        "signed off",
+        "stepped away",
+        "made their exit",
+        "dipped out",
+        "moved on",
+        "checked out",
+        "disappeared into the void",
+        "called it a day",
+        "left the building",
+        "bounced",
+        "logged off",
+        "faded into the distance"
+      ]
+    }
+  }
+}
