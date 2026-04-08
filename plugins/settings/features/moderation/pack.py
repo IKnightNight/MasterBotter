@@ -34,7 +34,6 @@ MAX_OPTIONS = 25
 ENABLED_TAG = "ENABLED"
 DISABLED_TAG = "DISABLED"
 BAN_RECOVERY_INVITE_DAYS = 7
-TUTORIAL_DURATION_HOURS = 2
 
 DEFAULT_MODERATION_SETTINGS = {
     "auto_threshold_actions": True,
@@ -68,78 +67,6 @@ def _guild_settings(cfg: Dict[str, Any]) -> Dict[str, Any]:
     for key, value in DEFAULT_MODERATION_SETTINGS.items():
         settings.setdefault(key, value)
     return settings
-
-
-def _tutorial_sessions(cfg: Dict[str, Any]) -> Dict[str, Any]:
-    sessions = cfg.setdefault("tutorial_sessions", {})
-    if not isinstance(sessions, dict):
-        sessions = {}
-        cfg["tutorial_sessions"] = sessions
-    return sessions
-
-
-def _parse_iso_utc(raw: Any) -> Optional[datetime]:
-    if raw is None:
-        return None
-    text = str(raw).strip()
-    if not text:
-        return None
-    try:
-        parsed = datetime.fromisoformat(text)
-    except Exception:
-        return None
-    if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=timezone.utc)
-    return parsed.astimezone(timezone.utc)
-
-
-def _cleanup_expired_tutorial_sessions(cfg: Dict[str, Any], *, now: Optional[datetime] = None) -> None:
-    sessions = _tutorial_sessions(cfg)
-    now_dt = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
-    for key, rec in list(sessions.items()):
-        if not isinstance(rec, dict):
-            sessions.pop(key, None)
-            continue
-        status = str(rec.get("status") or "active").strip().lower()
-        if status != "active":
-            sessions.pop(key, None)
-            continue
-        expires_at = _parse_iso_utc(rec.get("expires_at"))
-        if expires_at is None or expires_at <= now_dt:
-            sessions.pop(key, None)
-
-
-def _find_active_tutorial_session(cfg: Dict[str, Any], owner_user_id: int, tutorial_type: str) -> Optional[Dict[str, Any]]:
-    _cleanup_expired_tutorial_sessions(cfg)
-    owner = int(owner_user_id)
-    expected_type = str(tutorial_type).strip().lower()
-    for rec in _tutorial_sessions(cfg).values():
-        if not isinstance(rec, dict):
-            continue
-        if str(rec.get("status") or "active").strip().lower() != "active":
-            continue
-        if int(rec.get("owner_user_id") or 0) != owner:
-            continue
-        if str(rec.get("tutorial_type") or "").strip().lower() != expected_type:
-            continue
-        return rec
-    return None
-
-
-def _format_remaining_tutorial_time(expires_at_raw: Any) -> str:
-    expires_at = _parse_iso_utc(expires_at_raw)
-    if expires_at is None:
-        return "expired"
-    seconds = int((expires_at - datetime.now(timezone.utc)).total_seconds())
-    if seconds <= 0:
-        return "expired"
-    hours, remainder = divmod(seconds, 3600)
-    minutes, _ = divmod(remainder, 60)
-    if hours > 0:
-        return f"{hours}h {minutes}m"
-    if minutes > 0:
-        return f"{minutes}m"
-    return "<1m"
 
 
 def _threshold_action_key(strike_count: int) -> Optional[str]:
@@ -311,7 +238,6 @@ def _normalize_state(raw: Dict[str, Any]) -> Dict[str, Any]:
             cfg.setdefault("archive_cases", {})
             cfg.setdefault("archive_index_by_user", {})
             cfg.setdefault("pending_ban_recoveries", {})
-            cfg.setdefault("tutorial_sessions", {})
             _normalize_archive_storage(cfg)
             _guild_settings(cfg)
             for case_map_name in ("active_cases", "archive_cases"):
@@ -355,7 +281,6 @@ def _guild_cfg(state: Dict[str, Any], guild_id: int) -> Dict[str, Any]:
             "archive_cases": {},
             "archive_index_by_user": {},
             "pending_ban_recoveries": {},
-            "tutorial_sessions": {},
             "settings": _default_moderation_settings(),
         },
     )
@@ -364,7 +289,6 @@ def _guild_cfg(state: Dict[str, Any], guild_id: int) -> Dict[str, Any]:
     cfg.setdefault("archive_cases", {})
     cfg.setdefault("archive_index_by_user", {})
     cfg.setdefault("pending_ban_recoveries", {})
-    cfg.setdefault("tutorial_sessions", {})
     _normalize_archive_storage(cfg)
     _guild_settings(cfg)
     return cfg
@@ -2481,7 +2405,9 @@ class ModerationManager:
         invite_url = str((recovery or {}).get("invite_url") or "")
         history_count = len((active_case or {}).get("history") or [])
 
-        await self._fetch_user_object(user_id)
+        user_obj = await self._fetch_user_object(user_id)
+        user_mention = getattr(user_obj, "mention", f"<@{user_id}>")
+        thumb_url = str(getattr(getattr(user_obj, "display_avatar", None), "url", "") or "")
         embed = self._build_recovery_pending_embed(guild, active_case, recovery)
 
         msg = None
