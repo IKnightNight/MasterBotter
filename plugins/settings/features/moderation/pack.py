@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+# Touched on 2026-04-07 UTC for interactive tutorial workflow updates (repo sync update).
+
 import json
 import logging
 import re
@@ -34,6 +36,7 @@ MAX_OPTIONS = 25
 ENABLED_TAG = "ENABLED"
 DISABLED_TAG = "DISABLED"
 BAN_RECOVERY_INVITE_DAYS = 7
+TUTORIAL_DURATION_HOURS = 2
 
 DEFAULT_MODERATION_SETTINGS = {
     "auto_threshold_actions": True,
@@ -55,7 +58,7 @@ def _now_iso() -> str:
 
 
 def _default_state() -> Dict[str, Any]:
-    return {"guilds": {}, "next_ids": {"investigation": 1, "active": 1, "archive": 1, "alert": 1, "recovery": 1}}
+    return {"guilds": {}, "next_ids": {"investigation": 1, "active": 1, "archive": 1, "alert": 1, "recovery": 1, "tutorial": 1}}
 
 
 def _default_moderation_settings() -> Dict[str, Any]:
@@ -67,6 +70,78 @@ def _guild_settings(cfg: Dict[str, Any]) -> Dict[str, Any]:
     for key, value in DEFAULT_MODERATION_SETTINGS.items():
         settings.setdefault(key, value)
     return settings
+
+
+def _tutorial_sessions(cfg: Dict[str, Any]) -> Dict[str, Any]:
+    sessions = cfg.setdefault("tutorial_sessions", {})
+    if not isinstance(sessions, dict):
+        sessions = {}
+        cfg["tutorial_sessions"] = sessions
+    return sessions
+
+
+def _parse_iso_utc(raw: Any) -> Optional[datetime]:
+    if raw is None:
+        return None
+    text = str(raw).strip()
+    if not text:
+        return None
+    try:
+        parsed = datetime.fromisoformat(text)
+    except Exception:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def _cleanup_expired_tutorial_sessions(cfg: Dict[str, Any], *, now: Optional[datetime] = None) -> None:
+    sessions = _tutorial_sessions(cfg)
+    now_dt = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    for key, rec in list(sessions.items()):
+        if not isinstance(rec, dict):
+            sessions.pop(key, None)
+            continue
+        status = str(rec.get("status") or "active").strip().lower()
+        if status != "active":
+            sessions.pop(key, None)
+            continue
+        expires_at = _parse_iso_utc(rec.get("expires_at"))
+        if expires_at is None or expires_at <= now_dt:
+            sessions.pop(key, None)
+
+
+def _find_active_tutorial_session(cfg: Dict[str, Any], owner_user_id: int, tutorial_type: str) -> Optional[Dict[str, Any]]:
+    _cleanup_expired_tutorial_sessions(cfg)
+    owner = int(owner_user_id)
+    expected_type = str(tutorial_type).strip().lower()
+    for rec in _tutorial_sessions(cfg).values():
+        if not isinstance(rec, dict):
+            continue
+        if str(rec.get("status") or "active").strip().lower() != "active":
+            continue
+        if int(rec.get("owner_user_id") or 0) != owner:
+            continue
+        if str(rec.get("tutorial_type") or "").strip().lower() != expected_type:
+            continue
+        return rec
+    return None
+
+
+def _format_remaining_tutorial_time(expires_at_raw: Any) -> str:
+    expires_at = _parse_iso_utc(expires_at_raw)
+    if expires_at is None:
+        return "expired"
+    seconds = int((expires_at - datetime.now(timezone.utc)).total_seconds())
+    if seconds <= 0:
+        return "expired"
+    hours, remainder = divmod(seconds, 3600)
+    minutes, _ = divmod(remainder, 60)
+    if hours > 0:
+        return f"{hours}h {minutes}m"
+    if minutes > 0:
+        return f"{minutes}m"
+    return "<1m"
 
 
 def _threshold_action_key(strike_count: int) -> Optional[str]:
@@ -225,7 +300,7 @@ def _append_strike_entry(case: Dict[str, Any], *, reason: str, moderator_id: int
 def _normalize_state(raw: Dict[str, Any]) -> Dict[str, Any]:
     raw.setdefault("guilds", {})
     raw.setdefault("next_ids", {})
-    for key in ("investigation", "active", "archive", "alert", "recovery"):
+    for key in ("investigation", "active", "archive", "alert", "recovery", "tutorial"):
         raw["next_ids"].setdefault(key, 1)
     for cfg in raw.get("guilds", {}).values():
         if isinstance(cfg, dict):
@@ -238,6 +313,7 @@ def _normalize_state(raw: Dict[str, Any]) -> Dict[str, Any]:
             cfg.setdefault("archive_cases", {})
             cfg.setdefault("archive_index_by_user", {})
             cfg.setdefault("pending_ban_recoveries", {})
+            cfg.setdefault("tutorial_sessions", {})
             _normalize_archive_storage(cfg)
             _guild_settings(cfg)
             for case_map_name in ("active_cases", "archive_cases"):
@@ -281,6 +357,7 @@ def _guild_cfg(state: Dict[str, Any], guild_id: int) -> Dict[str, Any]:
             "archive_cases": {},
             "archive_index_by_user": {},
             "pending_ban_recoveries": {},
+            "tutorial_sessions": {},
             "settings": _default_moderation_settings(),
         },
     )
@@ -289,6 +366,7 @@ def _guild_cfg(state: Dict[str, Any], guild_id: int) -> Dict[str, Any]:
     cfg.setdefault("archive_cases", {})
     cfg.setdefault("archive_index_by_user", {})
     cfg.setdefault("pending_ban_recoveries", {})
+    cfg.setdefault("tutorial_sessions", {})
     _normalize_archive_storage(cfg)
     _guild_settings(cfg)
     return cfg
@@ -1453,12 +1531,76 @@ class PromoteReasonChoiceView(ui.View):
         return True
 
 
-class TutorialCompleteView(ui.View):
-    def __init__(self, cog: "ModerationCog", guild_id: int, session_id: str):
+class TutorialInteractiveView(ui.View):
+    def __init__(
+        self,
+        cog: "ModerationCog",
+        guild_id: int,
+        session_id: str,
+        tutorial_type: str,
+        owner: discord.Member,
+        steps: list[Dict[str, Any]],
+    ):
         super().__init__(timeout=3600)
         self._cog = cog
         self._guild_id = int(guild_id)
         self._session_id = str(session_id)
+        self._tutorial_type = str(tutorial_type).strip().lower()
+        self._owner = owner
+        self._steps = list(steps)
+        self._index = 0
+        self._sync_buttons()
+
+    def _sync_buttons(self) -> None:
+        total = max(len(self._steps), 1)
+        self.step_indicator.label = f"Step {self._index + 1}/{total}"
+        self.prev_step.disabled = self._index <= 0
+        self.next_step.disabled = self._index >= total - 1
+
+    async def _validate_owner_and_session(self, interaction: discord.Interaction) -> bool:
+        if interaction.guild is None or int(interaction.guild.id) != self._guild_id:
+            await _send_ephemeral_response(interaction, "This tutorial button can only be used in its original server.")
+            return False
+        state = _load_state()
+        cfg = _guild_cfg(state, self._guild_id)
+        _cleanup_expired_tutorial_sessions(cfg)
+        rec = _tutorial_sessions(cfg).get(self._session_id)
+        if not isinstance(rec, dict):
+            await _send_ephemeral_response(interaction, "This tutorial session is already closed or expired.")
+            return False
+        if int(rec.get("owner_user_id") or 0) != int(interaction.user.id):
+            await _send_ephemeral_response(interaction, "Only the tutorial owner can use this tutorial session.")
+            return False
+        return True
+
+    async def _redraw(self, interaction: discord.Interaction) -> None:
+        embed = self._cog.mgr.build_tutorial_step_embed(
+            owner=self._owner,
+            tutorial_type=self._tutorial_type,
+            session_id=self._session_id,
+            steps=self._steps,
+            step_index=self._index,
+        )
+        self._sync_buttons()
+        await interaction.response.edit_message(embed=embed, view=self)
+
+    @ui.button(label="◀ Previous", style=discord.ButtonStyle.secondary)
+    async def prev_step(self, interaction: discord.Interaction, button: ui.Button):
+        if not await self._validate_owner_and_session(interaction):
+            return
+        self._index = max(self._index - 1, 0)
+        await self._redraw(interaction)
+
+    @ui.button(label="Step", style=discord.ButtonStyle.secondary, disabled=True)
+    async def step_indicator(self, interaction: discord.Interaction, button: ui.Button):
+        await _send_ephemeral_response(interaction, "Use Previous/Next to move through the tutorial.")
+
+    @ui.button(label="Next ▶", style=discord.ButtonStyle.primary)
+    async def next_step(self, interaction: discord.Interaction, button: ui.Button):
+        if not await self._validate_owner_and_session(interaction):
+            return
+        self._index = min(self._index + 1, max(len(self._steps) - 1, 0))
+        await self._redraw(interaction)
 
     @ui.button(label="Mark Tutorial Complete", style=discord.ButtonStyle.success)
     async def complete(self, interaction: discord.Interaction, button: ui.Button):
@@ -2284,7 +2426,6 @@ class ModerationManager:
 
     def _build_tutorial_payload(self, guild: discord.Guild, owner: discord.Member, tutorial_type: str, session_id: str) -> tuple[discord.Embed, ui.View]:
         tutorial_type = str(tutorial_type).strip().lower()
-        title = "Moderator Tutorial" if tutorial_type == "moderator" else "Admin Tutorial"
         if tutorial_type == "moderator":
             lines = [
                 f"Current Summary: {owner.mention}",
@@ -2346,8 +2487,24 @@ class ModerationManager:
                 "↦ verify archive timeline is complete and reasons are audit-ready.",
                 "↦ practice recovery approval + invite flow for reversible actions.",
             ]
-        embed = _build_case_embed(f"{title} • {session_id}", "\n".join(lines), footer=f"Tutorial lock active for {owner.mention} • expires in {TUTORIAL_DURATION_HOURS} hour(s)")
-        view = TutorialCompleteView(self.bot.get_cog("ModerationCog"), guild.id, session_id)
+        )
+        return _build_case_embed(
+            f"{title} • {session_id}",
+            "\n".join(lines),
+            footer=f"Tutorial lock active for {owner.mention} • expires in {TUTORIAL_DURATION_HOURS} hour(s)",
+        )
+
+    def _build_tutorial_payload(self, guild: discord.Guild, owner: discord.Member, tutorial_type: str, session_id: str) -> tuple[discord.Embed, ui.View]:
+        tutorial_type = str(tutorial_type).strip().lower()
+        steps = self._tutorial_steps(tutorial_type)
+        embed = self.build_tutorial_step_embed(
+            owner=owner,
+            tutorial_type=tutorial_type,
+            session_id=session_id,
+            steps=steps,
+            step_index=0,
+        )
+        view = TutorialInteractiveView(self.bot.get_cog("ModerationCog"), guild.id, session_id, tutorial_type, owner, steps)
         return embed, view
 
     def _build_recovery_pending_embed(self, guild: discord.Guild, active_case: Dict[str, Any], recovery: Dict[str, Any]) -> discord.Embed:
