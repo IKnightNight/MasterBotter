@@ -34,7 +34,6 @@ MAX_OPTIONS = 25
 ENABLED_TAG = "ENABLED"
 DISABLED_TAG = "DISABLED"
 BAN_RECOVERY_INVITE_DAYS = 7
-TUTORIAL_DURATION_HOURS = 2
 
 DEFAULT_MODERATION_SETTINGS = {
     "auto_threshold_actions": True,
@@ -68,78 +67,6 @@ def _guild_settings(cfg: Dict[str, Any]) -> Dict[str, Any]:
     for key, value in DEFAULT_MODERATION_SETTINGS.items():
         settings.setdefault(key, value)
     return settings
-
-
-def _tutorial_sessions(cfg: Dict[str, Any]) -> Dict[str, Any]:
-    sessions = cfg.setdefault("tutorial_sessions", {})
-    if not isinstance(sessions, dict):
-        sessions = {}
-        cfg["tutorial_sessions"] = sessions
-    return sessions
-
-
-def _parse_iso_utc(raw: Any) -> Optional[datetime]:
-    if raw is None:
-        return None
-    text = str(raw).strip()
-    if not text:
-        return None
-    try:
-        parsed = datetime.fromisoformat(text)
-    except Exception:
-        return None
-    if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=timezone.utc)
-    return parsed.astimezone(timezone.utc)
-
-
-def _cleanup_expired_tutorial_sessions(cfg: Dict[str, Any], *, now: Optional[datetime] = None) -> None:
-    sessions = _tutorial_sessions(cfg)
-    now_dt = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
-    for key, rec in list(sessions.items()):
-        if not isinstance(rec, dict):
-            sessions.pop(key, None)
-            continue
-        status = str(rec.get("status") or "active").strip().lower()
-        if status != "active":
-            sessions.pop(key, None)
-            continue
-        expires_at = _parse_iso_utc(rec.get("expires_at"))
-        if expires_at is None or expires_at <= now_dt:
-            sessions.pop(key, None)
-
-
-def _find_active_tutorial_session(cfg: Dict[str, Any], owner_user_id: int, tutorial_type: str) -> Optional[Dict[str, Any]]:
-    _cleanup_expired_tutorial_sessions(cfg)
-    owner = int(owner_user_id)
-    expected_type = str(tutorial_type).strip().lower()
-    for rec in _tutorial_sessions(cfg).values():
-        if not isinstance(rec, dict):
-            continue
-        if str(rec.get("status") or "active").strip().lower() != "active":
-            continue
-        if int(rec.get("owner_user_id") or 0) != owner:
-            continue
-        if str(rec.get("tutorial_type") or "").strip().lower() != expected_type:
-            continue
-        return rec
-    return None
-
-
-def _format_remaining_tutorial_time(expires_at_raw: Any) -> str:
-    expires_at = _parse_iso_utc(expires_at_raw)
-    if expires_at is None:
-        return "expired"
-    seconds = int((expires_at - datetime.now(timezone.utc)).total_seconds())
-    if seconds <= 0:
-        return "expired"
-    hours, remainder = divmod(seconds, 3600)
-    minutes, _ = divmod(remainder, 60)
-    if hours > 0:
-        return f"{hours}h {minutes}m"
-    if minutes > 0:
-        return f"{minutes}m"
-    return "<1m"
 
 
 def _threshold_action_key(strike_count: int) -> Optional[str]:
@@ -311,7 +238,6 @@ def _normalize_state(raw: Dict[str, Any]) -> Dict[str, Any]:
             cfg.setdefault("archive_cases", {})
             cfg.setdefault("archive_index_by_user", {})
             cfg.setdefault("pending_ban_recoveries", {})
-            cfg.setdefault("tutorial_sessions", {})
             _normalize_archive_storage(cfg)
             _guild_settings(cfg)
             for case_map_name in ("active_cases", "archive_cases"):
@@ -355,7 +281,6 @@ def _guild_cfg(state: Dict[str, Any], guild_id: int) -> Dict[str, Any]:
             "archive_cases": {},
             "archive_index_by_user": {},
             "pending_ban_recoveries": {},
-            "tutorial_sessions": {},
             "settings": _default_moderation_settings(),
         },
     )
@@ -364,7 +289,6 @@ def _guild_cfg(state: Dict[str, Any], guild_id: int) -> Dict[str, Any]:
     cfg.setdefault("archive_cases", {})
     cfg.setdefault("archive_index_by_user", {})
     cfg.setdefault("pending_ban_recoveries", {})
-    cfg.setdefault("tutorial_sessions", {})
     _normalize_archive_storage(cfg)
     _guild_settings(cfg)
     return cfg
@@ -2359,6 +2283,7 @@ class ModerationManager:
             pass
 
     def _build_tutorial_payload(self, guild: discord.Guild, owner: discord.Member, tutorial_type: str, session_id: str) -> tuple[discord.Embed, ui.View]:
+        fake_user = owner.display_name
         tutorial_type = str(tutorial_type).strip().lower()
         title = "Moderator Tutorial" if tutorial_type == "moderator" else "Admin Tutorial"
         if tutorial_type == "moderator":
@@ -2368,34 +2293,14 @@ class ModerationManager:
                 f"• Stage: **Investigation**",
                 f"• Status: **ACTIVE**",
                 "",
-                "### Step 1 — Investigation thread controls",
-                "This first practice case lives in **Offenders - Investigation**.",
-                "Button guide for this card:",
-                "↦ **Current Summary**: quick snapshot of current status + latest reason.",
-                "↦ **Full History**: complete timeline with every report/strike entry.",
-                "↦ **Remove Report**: admin-only cleanup when a report is duplicate/spam/invalid.",
-                "↦ **Promote to Strike**: moves this offender from Investigation to Active.",
-                "↦ **Issue Ban**: emergency hard action (admin-only).",
+                "Reports: **1**",
+                '↦ 1: @reporter: "Training report reason"',
                 "",
-                "### Step 2 — Use fake reports to practice promote flow",
-                "Use either existing reports or write your own summary reason:",
-                '↦ 1: @ReporterAlpha: "User posted dox threat in #general at 14:22 UTC."',
-                '↦ 2: @ReporterBravo: "User repeated slur after warning in thread #help-logs."',
-                '↦ 3: @ReporterCharlie: "User evaded timeout with alt account (same phrasing/log pattern)."',
-                "",
-                "When you click **Promote to Strike**:",
-                "↦ pick one report reason, or",
-                "↦ click **Write Summary** and enter your own concise moderator summary.",
-                "",
-                "### Step 3 — Activate Investigation to end-to-end flow",
-                "Practice this full path in order:",
-                "↦ Review Investigation card + Full History.",
-                "↦ Promote to Strike with chosen report/summary.",
-                "↦ Open the Active card and validate strike count + threshold action.",
-                "↦ Add/adjust reason notes if needed.",
-                "↦ Finalize when policy threshold is reached.",
-                "",
-                "Goal: explain the entire investigation → strike → active moderation flow without prompts.",
+                "Use this tutorial to practice the normal moderation flow:",
+                "↦ Read the case card",
+                "↦ Use Current Summary for current state",
+                "↦ Use Full History for the timeline",
+                "↦ Practice Promote to Strike and Remove Report on real cases only",
             ]
         else:
             lines = [
@@ -2404,23 +2309,18 @@ class ModerationManager:
                 f"• Stage: **Archive**",
                 f"• Status: **FINALIZED**",
                 "",
-                "### Archive / Recovery training case",
-                "Reports: **2**",
-                '↦ 1: @ReporterDelta: "Repeat harassment after prior timeout."',
-                '↦ 2: @ReporterEcho: "Bypassed channel mute using emoji-only spam."',
+                "Reports: **1**",
+                '↦ 1: @reporter: "Training report reason"',
                 "",
                 "Strikes: **2**",
-                '↦ 1: @ModA: "Strike 1 • targeted insult + warning ignored"',
-                '↦ 2: @ModB: "Strike 2 • repeat behavior within 24h"',
+                '↦ 1: @moderator: "Training strike 1"',
+                '↦ 2: @moderator: "Training strike 2"',
                 "",
                 "Final Action",
                 f"↦ Approved by: {owner.mention}",
-                "↦ Closed as ban threshold reached",
+                "↦ Closed",
                 "",
-                "Admin checklist:",
-                "↦ verify report evidence and strike chain before finalization.",
-                "↦ verify archive timeline is complete and reasons are audit-ready.",
-                "↦ practice recovery approval + invite flow for reversible actions.",
+                "Use this tutorial to review archive/admin-only moderation concepts, including finalization and recovery review.",
             ]
         embed = _build_case_embed(f"{title} • {session_id}", "\n".join(lines), footer=f"Tutorial lock active for {owner.mention} • expires in {TUTORIAL_DURATION_HOURS} hour(s)")
         view = TutorialCompleteView(self.bot.get_cog("ModerationCog"), guild.id, session_id)
@@ -2472,9 +2372,18 @@ class ModerationManager:
             return
 
         user_id = int((active_case or {}).get("user_id") or 0)
+        display_name = str((active_case or {}).get("display_name") or (active_case or {}).get("user_name") or user_id)
+        case_id = str((active_case or {}).get("case_id") or "")
+        strike_count = int((active_case or {}).get("strike_count") or 0)
+        recovery_reason = str((recovery or {}).get("recovery_reason") or "")
+        recovery_id = str((recovery or {}).get("recovery_id") or "")
+        approved_by = int((recovery or {}).get("approved_by_user_id") or 0)
+        invite_url = str((recovery or {}).get("invite_url") or "")
         history_count = len((active_case or {}).get("history") or [])
-        # Keep behavior aligned with active-card rendering paths that opportunistically warm user cache.
-        await self._fetch_user_object(user_id)
+
+        user_obj = await self._fetch_user_object(user_id)
+        user_mention = getattr(user_obj, "mention", f"<@{user_id}>")
+        thumb_url = str(getattr(getattr(user_obj, "display_avatar", None), "url", "") or "")
         embed = self._build_recovery_pending_embed(guild, active_case, recovery)
 
         msg = None
@@ -4693,33 +4602,7 @@ async def setup(bot: commands.Bot, registry: SettingsRegistry) -> None:
             }
             _save_state(state)
             embed, tut_view = cog.mgr._build_tutorial_payload(interaction.guild, interaction.user, tutorial_type, session_id)
-            ensured = await cog.mgr.ensure_threads(interaction.guild)
-            if not ensured:
-                _tutorial_sessions(cfg).pop(session_id, None)
-                _save_state(state)
-                return {"op": "respond", "payload": {"content": "Training case lock created, but moderation threads are unavailable. Run Ensure Threads and try again.", "ephemeral": True}}
-            target_thread = ensured["investigation"] if tutorial_type == "moderator" else ensured["archive"]
-            opened_msg = None
-            try:
-                opened_msg = await target_thread.send(
-                    content=f"{interaction.user.mention} your {tutorial_type} tutorial is ready in this thread.",
-                    embed=embed,
-                    view=tut_view,
-                    allowed_mentions=discord.AllowedMentions(users=True, roles=False, everyone=False),
-                )
-            except Exception:
-                _tutorial_sessions(cfg).pop(session_id, None)
-                _save_state(state)
-                log.exception("moderation tutorial post failed guild=%s tutorial_type=%s", interaction.guild.id, tutorial_type)
-                return {"op": "respond", "payload": {"content": "Tutorial lock created, but I could not post it in the training thread.", "ephemeral": True}}
-            jump_url = opened_msg.jump_url if opened_msg is not None else ""
-            return {
-                "op": "respond",
-                "payload": {
-                    "content": f"Tutorial opened in {target_thread.mention}. I also @mentioned you there.\nUse this link: {jump_url}",
-                    "ephemeral": True,
-                },
-            }
+            return {"op": "respond", "payload": {"content": "Training case created. Use the button below to clear the tutorial when done.", "embed": embed, "view": tut_view, "ephemeral": True}}
 
         return None
 
