@@ -2424,107 +2424,68 @@ class ModerationManager:
         except Exception:
             pass
 
-    def _tutorial_steps(self, tutorial_type: str) -> list[Dict[str, Any]]:
+    def _build_tutorial_payload(self, guild: discord.Guild, owner: discord.Member, tutorial_type: str, session_id: str) -> tuple[discord.Embed, ui.View]:
         tutorial_type = str(tutorial_type).strip().lower()
         if tutorial_type == "moderator":
-            return [
-                {
-                    "name": "Orientation",
-                    "lines": [
-                        "This is a safe walkthrough for the day-to-day moderator flow.",
-                        "Nothing in this tutorial issues actions against a real member.",
-                        "Goal: learn which case controls to use and when.",
-                    ],
-                },
-                {
-                    "name": "Read Investigation Card",
-                    "lines": [
-                        "Start in **Offenders - Investigation**.",
-                        "Use **Current Summary** to review the latest case state.",
-                        "Use **Full History** to inspect timeline events before taking action.",
-                    ],
-                },
-                {
-                    "name": "Promote and Strike Flow",
-                    "lines": [
-                        "When evidence is sufficient, use **Promote to Strike**.",
-                        "Pick or write a clear summary reason for staff auditability.",
-                        "Always verify strike count and threshold action before confirming.",
-                    ],
-                },
-                {
-                    "name": "Report Hygiene",
-                    "lines": [
-                        "Use **Remove Report** only for duplicate/spam/invalid reports.",
-                        "Keep at least one valid report when escalation is still active.",
-                        "If uncertain, leave notes in the timeline instead of deleting context.",
-                    ],
-                },
-            ]
-        return [
-            {
-                "name": "Admin Scope",
-                "lines": [
-                    "Admin tutorial covers archive and recovery controls.",
-                    "Use this when reviewing finalized strike histories or ban reversals.",
-                    "Preserve staff traceability in every action reason.",
-                ],
-            },
-            {
-                "name": "Archive Validation",
-                "lines": [
-                    "Start in **Offenders - Archive** for finalized records.",
-                    "Confirm strike timeline, final action, and approving moderator.",
-                    "Never rewrite history; append corrective context in follow-up actions.",
-                ],
-            },
-            {
-                "name": "Recovery Review",
-                "lines": [
-                    "Use recovery tools only after policy approval for reversal.",
-                    "Check source archive case ID and restored-role list before executing.",
-                    "Post status notes so moderation staff sees completion outcomes.",
-                ],
-            },
-            {
-                "name": "Closeout Checklist",
-                "lines": [
-                    "Validate pending items are cleared from active/recovery queues.",
-                    "Ensure any recovery notice has a completion status update.",
-                    "Mark tutorial complete once you can explain this flow unaided.",
-                ],
-            },
-        ]
-
-    def build_tutorial_step_embed(
-        self,
-        *,
-        owner: discord.Member,
-        tutorial_type: str,
-        session_id: str,
-        steps: list[Dict[str, Any]],
-        step_index: int,
-    ) -> discord.Embed:
-        tutorial_type = str(tutorial_type).strip().lower()
-        title = "Moderator Tutorial" if tutorial_type == "moderator" else "Admin Tutorial"
-        idx = max(0, min(step_index, max(len(steps) - 1, 0)))
-        total = max(len(steps), 1)
-        step = steps[idx] if steps else {"name": "Overview", "lines": ["No tutorial steps are available."]}
-        lines = [
-            f"Current Summary: {owner.mention}",
-            f"• Case ID: **{session_id}**",
-            f"• Tutorial Type: **{title}**",
-            f"• Progress: **Step {idx + 1}/{total} — {step.get('name', 'Step')}**",
-            "",
-        ]
-        for entry in list(step.get("lines") or []):
-            lines.append(f"↦ {entry}")
-        lines.extend(
-            [
+            lines = [
+                f"Current Summary: {owner.mention}",
+                f"• Case ID: **tut-mod-1**",
+                f"• Stage: **Investigation**",
+                f"• Status: **ACTIVE**",
                 "",
-                "Controls",
-                "↦ Use **Previous** and **Next** to move through each module.",
-                "↦ Use **Mark Tutorial Complete** to clear your tutorial lock.",
+                "### Step 1 — Investigation thread controls",
+                "This first practice case lives in **Offenders - Investigation**.",
+                "Button guide for this card:",
+                "↦ **Current Summary**: quick snapshot of current status + latest reason.",
+                "↦ **Full History**: complete timeline with every report/strike entry.",
+                "↦ **Remove Report**: admin-only cleanup when a report is duplicate/spam/invalid.",
+                "↦ **Promote to Strike**: moves this offender from Investigation to Active.",
+                "↦ **Issue Ban**: emergency hard action (admin-only).",
+                "",
+                "### Step 2 — Use fake reports to practice promote flow",
+                "Use either existing reports or write your own summary reason:",
+                '↦ 1: @ReporterAlpha: "User posted dox threat in #general at 14:22 UTC."',
+                '↦ 2: @ReporterBravo: "User repeated slur after warning in thread #help-logs."',
+                '↦ 3: @ReporterCharlie: "User evaded timeout with alt account (same phrasing/log pattern)."',
+                "",
+                "When you click **Promote to Strike**:",
+                "↦ pick one report reason, or",
+                "↦ click **Write Summary** and enter your own concise moderator summary.",
+                "",
+                "### Step 3 — Activate Investigation to end-to-end flow",
+                "Practice this full path in order:",
+                "↦ Review Investigation card + Full History.",
+                "↦ Promote to Strike with chosen report/summary.",
+                "↦ Open the Active card and validate strike count + threshold action.",
+                "↦ Add/adjust reason notes if needed.",
+                "↦ Finalize when policy threshold is reached.",
+                "",
+                "Goal: explain the entire investigation → strike → active moderation flow without prompts.",
+            ]
+        else:
+            lines = [
+                f"Current Summary: {owner.mention}",
+                f"• Case ID: **tut-admin-1**",
+                f"• Stage: **Archive**",
+                f"• Status: **FINALIZED**",
+                "",
+                "### Archive / Recovery training case",
+                "Reports: **2**",
+                '↦ 1: @ReporterDelta: "Repeat harassment after prior timeout."',
+                '↦ 2: @ReporterEcho: "Bypassed channel mute using emoji-only spam."',
+                "",
+                "Strikes: **2**",
+                '↦ 1: @ModA: "Strike 1 • targeted insult + warning ignored"',
+                '↦ 2: @ModB: "Strike 2 • repeat behavior within 24h"',
+                "",
+                "Final Action",
+                f"↦ Approved by: {owner.mention}",
+                "↦ Closed as ban threshold reached",
+                "",
+                "Admin checklist:",
+                "↦ verify report evidence and strike chain before finalization.",
+                "↦ verify archive timeline is complete and reasons are audit-ready.",
+                "↦ practice recovery approval + invite flow for reversible actions.",
             ]
         )
         return _build_case_embed(
@@ -4822,7 +4783,33 @@ async def setup(bot: commands.Bot, registry: SettingsRegistry) -> None:
             }
             _save_state(state)
             embed, tut_view = cog.mgr._build_tutorial_payload(interaction.guild, interaction.user, tutorial_type, session_id)
-            return {"op": "respond", "payload": {"content": "Training case created. Use the button below to clear the tutorial when done.", "embed": embed, "view": tut_view, "ephemeral": True}}
+            ensured = await cog.mgr.ensure_threads(interaction.guild)
+            if not ensured:
+                _tutorial_sessions(cfg).pop(session_id, None)
+                _save_state(state)
+                return {"op": "respond", "payload": {"content": "Training case lock created, but moderation threads are unavailable. Run Ensure Threads and try again.", "ephemeral": True}}
+            target_thread = ensured["investigation"] if tutorial_type == "moderator" else ensured["archive"]
+            opened_msg = None
+            try:
+                opened_msg = await target_thread.send(
+                    content=f"{interaction.user.mention} your {tutorial_type} tutorial is ready in this thread.",
+                    embed=embed,
+                    view=tut_view,
+                    allowed_mentions=discord.AllowedMentions(users=True, roles=False, everyone=False),
+                )
+            except Exception:
+                _tutorial_sessions(cfg).pop(session_id, None)
+                _save_state(state)
+                log.exception("moderation tutorial post failed guild=%s tutorial_type=%s", interaction.guild.id, tutorial_type)
+                return {"op": "respond", "payload": {"content": "Tutorial lock created, but I could not post it in the training thread.", "ephemeral": True}}
+            jump_url = opened_msg.jump_url if opened_msg is not None else ""
+            return {
+                "op": "respond",
+                "payload": {
+                    "content": f"Tutorial opened in {target_thread.mention}. I also @mentioned you there.\nUse this link: {jump_url}",
+                    "ephemeral": True,
+                },
+            }
 
         return None
 
